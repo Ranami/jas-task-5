@@ -1,55 +1,52 @@
 import * as React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import Rating from "@mui/material/Rating";
+import { getStartsByRating } from "../utils/getStartsByRating";
+import { styled } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+const Box = styled("div")`
+  width: 292px;
+  height: 440px;
+  background-image: ${(props) =>
+    `url("https://image.tmdb.org/t/p/original${props.imageurl}");`}
+  background-size: cover;
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 24px;
+  box-sizing: border-box;
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(180deg, rgba(29, 29, 29, 0) 0%, rgba(29, 29, 29, 0.8) 80.79%);
+  }
+  color: white;
+`;
+
+const Title = styled("span")`
+  font-weight: 500;
+  font-size: 24px;
+  z-index: 1;
+`;
+const Stars = styled("div")`
+  z-index: 1;
+  font-size: 12px;
+  margin-bottom: 16px;
+`;
 
 export default function ImgMediaCard({ movie }) {
+  const navigate = useNavigate();
   return (
-    <Card
-      sx={{
-        maxWidth: 345,
-        background: `linear-gradient(rgba(0,0,0,0.4),
-        rgba(0,0,0,0.4)),url(${
-          "https://image.tmdb.org/t/p/original" + movie.poster_path
-        })`,
-        color: "#ffffff",
-        backgroundSize: "cover",
-        position: "relative",
-      }}
+    <Box
+      imageurl={movie.poster_path}
       className="movie_card"
+      onClick={() => {
+        navigate("/movies/" + movie.id);
+      }}
     >
-      <CardContent
-        style={{
-          position: "absolute",
-          bottom: 0,
-          textShadow: "1px 1px 1px #000",
-          marginLeft: "10px",
-        }}
-      >
-        <Typography
-          gutterBottom
-          variant="h5"
-          component="span"
-          style={{
-            color: "#0FEFFD",
-            backgroundColor: "#000000",
-            borderTopLeftRadius: "3px",
-            borderBottomRightRadius: "3px",
-          }}
-        >
-          {movie.genre_ids[0]}
-          <br />
-        </Typography>
-        <Rating
-          name="read-only"
-          value={(movie.vote_average / 10) * 5}
-          readOnly
-        />
-        <Typography gutterBottom variant="h5" component="div">
-          {movie.title}
-        </Typography>
-      </CardContent>
-    </Card>
+      <Title>{movie.title}</Title>
+      <Stars>{getStartsByRating(movie.vote_average)}</Stars>
+    </Box>
   );
 }

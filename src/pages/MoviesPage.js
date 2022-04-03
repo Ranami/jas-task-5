@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
-import { Container } from "@mui/material";
+import { Container, Pagination } from "@mui/material";
 import ImgMediaCard from "../components/ImgMediaCard";
 import TextField from "@mui/material/TextField";
 import Button from "@material-ui/core/Button";
 
 export function MoviesPage() {
   const [movies, setMovies] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [sortBy, setSortBy] = useState("popularity.desc");
+  const [pageInfo, setPageInfo] = useState({
+    page: 1,
+    total_pages: 0,
+  });
+
+  function searchMovies(page = 1, sortBy) {}
 
   useEffect(() => {
     fetch(
@@ -16,8 +24,6 @@ export function MoviesPage() {
         setMovies(data.results);
       });
   }, []);
-
-  const [searchText, setSearchText] = useState("");
 
   function searchMovies() {
     fetch(
@@ -51,11 +57,13 @@ export function MoviesPage() {
       </div>
 
       <h1>Movies</h1>
+
       <div className="movie_cards">
         {movies.map((movie) => (
           <ImgMediaCard movie={movie} key={movie.id} />
         ))}
       </div>
+      <Pagination count={pageInfo.total_pages} />
     </Container>
   );
 }
